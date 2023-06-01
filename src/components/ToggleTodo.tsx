@@ -1,43 +1,39 @@
-"use client";
+import { db } from "@/db";
+import { Todo, todos } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
-import { useRouter } from "next/navigation";
-import { Todo } from "@/db/schema";
-import { delay } from "@/lib/utils";
-
-const toggleTodo = async ({ id, title, completed }: Todo) => {
-  const response = await fetch(
-    `http://localhost:3000/api/todos/${id}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({
-        title,
-        completed: completed === 1 ? 0 : 1,
-      }),
-    },
-  );
-
-  await delay(3000)
-
-  const todo = await response.json();
-  return todo as Todo;
-};
-
-const ToggleTodo = ({ id, title, completed }: Todo) => {
-  const router = useRouter();
-
-  const handleClick = () => {
-    toggleTodo({ id, title, completed })
-    router.refresh()
-  }
+async function giveUpTodo(data: FormData) {
+  "use server";
   
-  return (
-    <button
-      className="py-2 px-3 bg-slate-300 hover:bg-slate-100 text-slate-900 transition-colors rounded-xl font-semibold font-heading"
-      onClick={handleClick}
-    >
-      {completed ? "Give Up" : "Complete"}
-    </button>
-  );
-};
+  db.update(todos)
+    .set({ completed: 0 })
+    .where(eq(todos.id, parseInt(data.get("id") as string))).run();
+  
+  redirect("/todos");
+}
 
-export default ToggleTodo;
+async function finishTodo(data: FormData) {
+  "use server";
+
+  db.update(todos)
+    .set({ completed: 1 })
+    .where(eq(todos.id, parseInt(data.get("id") as string))).run();
+  
+  redirect("/todos");
+}
+
+export default async function ToggleTodo({ id, completed }: Todo) {
+  return (
+    <form action={completed ? giveUpTodo : finishTodo} className="w-full">
+      <button
+        name="id"
+        value={id}
+        type="submit"
+        className="py-2 px-3 bg-slate-300 hover:bg-slate-200 transition-colors text-slate-900 rounded-xl font-semibold font-heading w-full"
+      >
+        {completed ? 'Give up' : 'Finish'}
+      </button>
+    </form>
+  );
+}

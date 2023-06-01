@@ -31,6 +31,7 @@ export default async function TodoPage({ params }: Props) {
       <div className="flex flex-col gap-2">
         <TodoItem {...todo} />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
+          {/* @ts-expect-error Server Component */}
           <ToggleTodo {...todo} />
 
           {/* @ts-expect-error Server Component */}
