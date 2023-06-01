@@ -14,18 +14,6 @@ const todoUpdateScheme = z.object({
   completed: z.number(),
 });
 
-export async function DELETE(
-  _: Request,
-  context: z.infer<typeof routeContextSchema>,
-) {
-  const { params } = routeContextSchema.parse(context);
-
-  const deletedTodo = db.delete(todos).where(eq(todos.id, parseInt(params.id)))
-    .returning().get();
-
-  return new Response(JSON.stringify(deletedTodo));
-}
-
 export async function PATCH(
   req: Request,
   context: z.infer<typeof routeContextSchema>,
