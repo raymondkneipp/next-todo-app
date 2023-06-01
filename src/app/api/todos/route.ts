@@ -7,12 +7,6 @@ const todoCreateSchema = z.object({
   completed: z.boolean(),
 });
 
-export async function GET() {
-  const result = db.select().from(todos).all();
-
-  return new Response(JSON.stringify(result));
-}
-
 export async function POST(req: Request) {
   const json = await req.json();
   const body = todoCreateSchema.parse(json);

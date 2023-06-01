@@ -1,20 +1,10 @@
 import TodoItem from "@/components/TodoItem";
 import { Todo } from "@/db/schema";
-import { delay } from "@/lib/utils";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 
 async function fetchTodos() {
-  
-  const response = await fetch(
-    "http://localhost:3000/api/todos",
-    {
-      cache: "no-store",
-    },
-  );
-
-  await delay();
-
-  const todos = await response.json();
-  return todos;
+  return db.select().from(todos).all();
 }
 
 export default async function TodosPage() {
