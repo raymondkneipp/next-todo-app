@@ -3,7 +3,7 @@ import { Todo } from "@/db/schema";
 import { db } from "@/db";
 import { todos } from "@/db/schema";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 async function fetchTodos() {
   return db.select().from(todos).all();
