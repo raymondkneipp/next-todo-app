@@ -1,7 +1,12 @@
 export default function Loading() {
   return (
-  <>
-      <span className='text-3xl animate-ping text-center mx-auto'>⏳</span>
-  </>
-  )
+    <>
+      <div className="flex flex-col gap-2 animate-pulse">
+        <div className="bg-slate-800 h-11 w-full rounded-xl"></div>
+        <div className="bg-slate-800 h-11 w-full rounded-xl"></div>
+        <div className="bg-slate-800 h-11 w-full rounded-xl"></div>
+        <div className="bg-slate-800 h-11 w-full rounded-xl"></div>
+      </div>
+    </>
+  );
 }

@@ -5,15 +5,19 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { todos } from "@/db/schema";
 import { notFound } from "next/navigation";
+import { delay } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function fetchTodo(id: string) {
   const res = db.select().from(todos).where(eq(todos.id, parseInt(id))).get();
-  
+
   if (!res) {
     notFound();
   }
+
+  await delay();
+
   return res;
 }
 

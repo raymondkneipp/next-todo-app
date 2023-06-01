@@ -2,10 +2,13 @@ import TodoItem from "@/components/TodoItem";
 import { Todo } from "@/db/schema";
 import { db } from "@/db";
 import { todos } from "@/db/schema";
+import { delay } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function fetchTodos() {
+  await delay();
+
   return db.select().from(todos).all();
 }
 
