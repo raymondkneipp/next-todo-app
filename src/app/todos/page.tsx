@@ -1,20 +1,15 @@
 import TodoItem from "@/components/TodoItem";
 import { Todo } from "@/db/schema";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 import { delay } from "@/lib/utils";
 
-async function fetchTodos() {
-  
-  const response = await fetch(
-    "http://localhost:3000/api/todos",
-    {
-      cache: "no-store",
-    },
-  );
+export const revalidate = 0;
 
+async function fetchTodos() {
   await delay();
 
-  const todos = await response.json();
-  return todos;
+  return db.select().from(todos).all();
 }
 
 export default async function TodosPage() {
@@ -25,7 +20,7 @@ export default async function TodosPage() {
       <h1 className="font-semibold font-heading text-xl text-center">
         Your Tasks
       </h1>
-      {todos.map((todo: Todo) => <TodoItem {...todo} />)}
+      {todos.map((todo: Todo) => <TodoItem {...todo} key={todo.id} />)}
     </div>
   );
 }

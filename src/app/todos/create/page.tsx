@@ -1,41 +1,17 @@
-import {redirect} from 'next/navigation'
-import { delay } from "@/lib/utils";
+import { redirect } from "next/navigation";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 
-// async function createTodo() {
-//   const response = await fetch(
-//     "http://localhost:3000/api/todos",
-//     {
-//       method: "POST"
-//     },
-//   );
-//
-//   wait(3000)
-//
-//   const todo = await response.json();
-//   return todo;
-// }
-
-export default async function TodosPage() {
+export default async function CreatePage() {
   async function createTodo(data: FormData) {
     "use server";
 
-    const newTodo = {
-      title: data.get("title"),
-      completed: false,
-    };
+    db.insert(todos).values({
+      title: data.get("title") as string,
+      completed: 0,
+    }).run();
 
-    const response = await fetch("http://localhost:3000/api/todos", {
-      method: "POST",
-      body: JSON.stringify({
-        ...newTodo,
-      }),
-    });
-
-    await delay()
-
-    if (response.ok) {
-      redirect('/todos')
-    }
+    redirect('/todos')
   }
 
   return (
@@ -45,8 +21,17 @@ export default async function TodosPage() {
           New Task
         </h1>
         <form action={createTodo} className="flex flex-col gap-2">
-          <input type="text" name="title" className="bg-transparent rounded-xl border border-slate-700 focus:border-slate-300 outline-none px-3 py-2 transition-colors" />
-          <button type="submit" className="py-2 px-3 bg-slate-300 text-slate-900 hover:bg-slate-100 rounded-xl font-semibold font-heading">Create Task</button>
+          <input
+            type="text"
+            name="title"
+            className="bg-transparent rounded-xl border border-slate-700 focus:border-slate-300 outline-none px-3 py-2 transition-colors"
+          />
+          <button
+            type="submit"
+            className="py-2 px-3 bg-slate-300 text-slate-900 hover:bg-slate-100 rounded-xl font-semibold font-heading"
+          >
+            Create Task
+          </button>
         </form>
       </div>
     </>

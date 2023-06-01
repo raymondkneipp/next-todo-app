@@ -1,37 +1,28 @@
-"use client";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
-import { useTransition } from "react";
-import { redirect, useRouter } from "next/navigation";
-import { Todo } from "@/db/schema";
-import { delay } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
+async function deleteTodo(data: FormData) {
+  "use server";
 
-const deleteTodo = async (id: number) => {
-  const response = await fetch(
-    `http://localhost:3000/api/todos/${id}`,
-    {
-      method: "DELETE",
-    },
-  );
+  db.delete(todos).where(eq(todos.id, parseInt(data.get("id") as string)))
+    .run();
 
-  await delay(3000);
+  redirect("/todos");
+}
 
-  const todo = await response.json();
-  // revalidatePath('/todos')
-  redirect('/todos')
-};
-
-const DeleteTodo = ({ id }: { id: number }) => {
-  let [isPending, startTransition] = useTransition()
-  
+export default async function DeleteTodo({ id }: { id: number }) {
   return (
-    <button
-      onClick={() => startTransition(() => deleteTodo(id))}
-      className="py-2 px-3 bg-red-400 hover:bg-red-300 transition-colors text-slate-900 rounded-xl font-semibold font-heading"
-    >
-      Delete
-    </button>
+    <form action={deleteTodo} className="w-full">
+      <button
+        name="id"
+        value={id}
+        type="submit"
+        className="py-2 px-3 bg-red-400 hover:bg-red-300 transition-colors text-slate-900 rounded-xl font-semibold font-heading w-full"
+      >
+        Delete
+      </button>
+    </form>
   );
-};
-
-export default DeleteTodo;
+}
