@@ -14,17 +14,6 @@ const todoUpdateScheme = z.object({
   completed: z.number(),
 });
 
-export async function GET(
-  _: Request,
-  context: z.infer<typeof routeContextSchema>,
-) {
-  const { params } = routeContextSchema.parse(context);
-
-  const result = db.select().from(todos).where(eq(todos.id, parseInt(params.id))).get();
-
-  return new Response(JSON.stringify(result));
-}
-
 export async function DELETE(
   _: Request,
   context: z.infer<typeof routeContextSchema>,

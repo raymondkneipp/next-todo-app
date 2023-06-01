@@ -1,21 +1,12 @@
 import DeleteTodo from "@/components/DeleteTodo";
 import TodoItem from "@/components/TodoItem";
 import ToggleTodo from "@/components/ToggleTodo";
-import { Todo } from "@/db/schema";
-import { delay } from "@/lib/utils";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 
 async function fetchTodo(id: string) {
-  const response = await fetch(
-    `http://localhost:3000/api/todos/${id}`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  await delay();
-
-  const todo = await response.json();
-  return todo as Todo;
+  return db.select().from(todos).where(eq(todos.id, parseInt(id))).get();
 }
 
 interface Props {
